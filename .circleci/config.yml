@@ -1,0 +1,523 @@
+defaults: &defaults
+  docker:
+    - image: circleci/node:10.16.0
+  working_directory: ~/repo
+
+filtersDefaults: &filtersDefaults
+  filters:
+    branches:
+      only: master
+
+version: 2
+
+jobs:
+  abilityScores:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Setup Environments
+          command: |
+            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+            echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+            sudo apt-get update
+            sudo apt-get install -y mongodb-org-shell=4.0.10 mongodb-org-tools=4.0.10
+      - run:
+          name: Build Ability Scores
+          command: node helper Ability-Scores
+      - run:
+          name: Drop Ability Scores
+          command: mongo "$MONGODB_URI" --retryWrites --eval "db.abilityScores.drop()"
+      - run:
+          name: Upload Ability Scores
+          command: mongoimport --uri "$MONGODB_URI" -c abilityScores --file upload-5e-SRD-Ability-Scores.json --jsonArray
+
+  classes:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Setup Environments
+          command: |
+            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+            echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+            sudo apt-get update
+            sudo apt-get install -y mongodb-org-shell=4.0.10 mongodb-org-tools=4.0.10
+      - run:
+          name: Build Classes
+          command: node helper Classes
+      - run:
+          name: Drop Classes
+          command: mongo "$MONGODB_URI" --eval "db.classes.drop()"
+      - run:
+          name: Upload Classes
+          command: mongoimport --uri "$MONGODB_URI" -c classes --file upload-5e-SRD-Classes.json --jsonArray
+
+  conditions:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Setup Environments
+          command: |
+            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+            echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+            sudo apt-get update
+            sudo apt-get install -y mongodb-org-shell=4.0.10 mongodb-org-tools=4.0.10
+      - run:
+          name: Build Conditions
+          command: node helper Conditions
+      - run:
+          name: Drop Conditions
+          command: mongo "$MONGODB_URI" --eval "db.conditions.drop()"
+      - run:
+          name: Upload Conditions
+          command: mongoimport --uri "$MONGODB_URI" -c conditions --file upload-5e-SRD-Conditions.json --jsonArray
+
+  damageTypes:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Setup Environments
+          command: |
+            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+            echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+            sudo apt-get update
+            sudo apt-get install -y mongodb-org-shell=4.0.10 mongodb-org-tools=4.0.10
+      - run:
+          name: Build Damage Types
+          command: node helper Damage-Types
+      - run:
+          name: Drop Damage Types
+          command: mongo "$MONGODB_URI" --eval "db.damageTypes.drop()"
+      - run:
+          name: Upload Damage Types
+          command: mongoimport --uri "$MONGODB_URI" -c damageTypes --file upload-5e-SRD-Damage-Types.json --jsonArray
+
+  equipmentCategories:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Setup Environments
+          command: |
+            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+            echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+            sudo apt-get update
+            sudo apt-get install -y mongodb-org-shell=4.0.10 mongodb-org-tools=4.0.10
+      - run:
+          name: Build Equipment Categories
+          command: node helper Equipment-Categories
+      - run:
+          name: Drop Equipment Categories
+          command: mongo "$MONGODB_URI" --eval "db.equipmentCategories.drop()"
+      - run:
+          name: Upload Equipment Categories
+          command: mongoimport --uri "$MONGODB_URI" -c equipmentCategories --file upload-5e-SRD-Equipment-Categories.json --jsonArray
+
+  equipment:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Setup Environments
+          command: |
+            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+            echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+            sudo apt-get update
+            sudo apt-get install -y mongodb-org-shell=4.0.10 mongodb-org-tools=4.0.10
+      - run:
+          name: Build Equipment
+          command: node helper Equipment
+      - run:
+          name: Drop Equipment
+          command: mongo "$MONGODB_URI" --eval "db.equipment.drop()"
+      - run:
+          name: Upload Equipment
+          command: mongoimport --uri "$MONGODB_URI" -c equipment --file upload-5e-SRD-Equipment.json --jsonArray
+
+  features:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Setup Environments
+          command: |
+            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+            echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+            sudo apt-get update
+            sudo apt-get install -y mongodb-org-shell=4.0.10 mongodb-org-tools=4.0.10
+      - run:
+          name: Build Features
+          command: node helper Features
+      - run:
+          name: Drop Features
+          command: mongo "$MONGODB_URI" --eval "db.features.drop()"
+      - run:
+          name: Upload Features
+          command: mongoimport --uri "$MONGODB_URI" -c features --file upload-5e-SRD-Features.json --jsonArray
+
+  languages:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Setup Environments
+          command: |
+            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+            echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+            sudo apt-get update
+            sudo apt-get install -y mongodb-org-shell=4.0.10 mongodb-org-tools=4.0.10
+      - run:
+          name: Build Languages
+          command: node helper Languages
+      - run:
+          name: Drop Languages
+          command: mongo "$MONGODB_URI" --eval "db.languages.drop()"
+      - run:
+          name: Upload Languages
+          command: mongoimport --uri "$MONGODB_URI" -c languages --file upload-5e-SRD-Languages.json --jsonArray
+
+  levels:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Setup Environments
+          command: |
+            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+            echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+            sudo apt-get update
+            sudo apt-get install -y mongodb-org-shell=4.0.10 mongodb-org-tools=4.0.10
+      - run:
+          name: Build Levels
+          command: node helper Levels
+      - run:
+          name: Drop Levels
+          command: mongo "$MONGODB_URI" --eval "db.levels.drop()"
+      - run:
+          name: Upload Levels
+          command: mongoimport --uri "$MONGODB_URI" -c levels --file upload-5e-SRD-Levels.json --jsonArray
+
+  magicSchools:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Setup Environments
+          command: |
+            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+            echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+            sudo apt-get update
+            sudo apt-get install -y mongodb-org-shell=4.0.10 mongodb-org-tools=4.0.10
+      - run:
+          name: Build Magic Schools
+          command: node helper Magic-Schools
+      - run:
+          name: Drop Magic Schools
+          command: mongo "$MONGODB_URI" --eval "db.magicSchools.drop()"
+      - run:
+          name: Upload Magic Schools
+          command: mongoimport --uri "$MONGODB_URI" -c magicSchools --file upload-5e-SRD-Magic-Schools.json --jsonArray
+
+  monsters:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Setup Environments
+          command: |
+            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+            echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+            sudo apt-get update
+            sudo apt-get install -y mongodb-org-shell=4.0.10 mongodb-org-tools=4.0.10
+      - run:
+          name: Build Monsters
+          command: node helper Monsters
+      - run:
+          name: Drop Monsters
+          command: mongo "$MONGODB_URI" --eval "db.monsters.drop()"
+      - run:
+          name: Upload Monsters
+          command: mongoimport --uri "$MONGODB_URI" -c monsters --file upload-5e-SRD-Monsters.json --jsonArray
+
+  proficiencies:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Setup Environments
+          command: |
+            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+            echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+            sudo apt-get update
+            sudo apt-get install -y mongodb-org-shell=4.0.10 mongodb-org-tools=4.0.10
+      - run:
+          name: Build Proficiencies
+          command: node helper Proficiencies
+      - run:
+          name: Drop Proficiencies
+          command: mongo "$MONGODB_URI" --eval "db.proficiencies.drop()"
+      - run:
+          name: Upload Proficiencies
+          command: mongoimport --uri "$MONGODB_URI" -c proficiencies --file upload-5e-SRD-Proficiencies.json --jsonArray
+
+  races:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Setup Environments
+          command: |
+            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+            echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+            sudo apt-get update
+            sudo apt-get install -y mongodb-org-shell=4.0.10 mongodb-org-tools=4.0.10
+      - run:
+          name: Build Races
+          command: node helper Races
+      - run:
+          name: Drop Races
+          command: mongo "$MONGODB_URI" --eval "db.races.drop()"
+      - run:
+          name: Upload Races
+          command: mongoimport --uri "$MONGODB_URI" -c races --file upload-5e-SRD-Races.json --jsonArray
+
+  skills:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Setup Environments
+          command: |
+            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+            echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+            sudo apt-get update
+            sudo apt-get install -y mongodb-org-shell=4.0.10 mongodb-org-tools=4.0.10
+      - run:
+          name: Build Skills
+          command: node helper Skills
+      - run:
+          name: Drop Skills
+          command: mongo "$MONGODB_URI" --eval "db.skills.drop()"
+      - run:
+          name: Upload Skills
+          command: mongoimport --uri "$MONGODB_URI" -c skills --file upload-5e-SRD-Skills.json --jsonArray
+
+  spellcasting:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Setup Environments
+          command: |
+            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+            echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+            sudo apt-get update
+            sudo apt-get install -y mongodb-org-shell=4.0.10 mongodb-org-tools=4.0.10
+      - run:
+          name: Build Spellcasting
+          command: node helper Spellcasting
+      - run:
+          name: Drop Spellcasting
+          command: mongo "$MONGODB_URI" --eval "db.spellcasting.drop()"
+      - run:
+          name: Upload Spellcasting
+          command: mongoimport --uri "$MONGODB_URI" -c spellcasting --file upload-5e-SRD-Spellcasting.json --jsonArray
+
+  spells:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Setup Environments
+          command: |
+            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+            echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+            sudo apt-get update
+            sudo apt-get install -y mongodb-org-shell=4.0.10 mongodb-org-tools=4.0.10
+      - run:
+          name: Build Spells
+          command: node helper Spells
+      - run:
+          name: Drop Spells
+          command: mongo "$MONGODB_URI" --eval "db.spells.drop()"
+      - run:
+          name: Upload Spells
+          command: mongoimport --uri "$MONGODB_URI" -c spells --file upload-5e-SRD-Spells.json --jsonArray
+
+  startingEquipment:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Setup Environments
+          command: |
+            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+            echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+            sudo apt-get update
+            sudo apt-get install -y mongodb-org-shell=4.0.10 mongodb-org-tools=4.0.10
+      - run:
+          name: Build Starting Equipment
+          command: node helper StartingEquipment
+      - run:
+          name: Drop Starting Equipment
+          command: mongo "$MONGODB_URI" --eval "db.startingEquipment.drop()"
+      - run:
+          name: Upload Starting Equipment
+          command: mongoimport --uri "$MONGODB_URI" -c startingEquipment --file upload-5e-SRD-StartingEquipment.json --jsonArray
+
+  subclasses:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Setup Environments
+          command: |
+            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+            echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+            sudo apt-get update
+            sudo apt-get install -y mongodb-org-shell=4.0.10 mongodb-org-tools=4.0.10
+      - run:
+          name: Build Subclasses
+          command: node helper Subclasses
+      - run:
+          name: Drop Subclasses
+          command: mongo "$MONGODB_URI" --eval "db.subclasses.drop()"
+      - run:
+          name: Upload Subclasses
+          command: mongoimport --uri "$MONGODB_URI" -c subclasses --file upload-5e-SRD-Subclasses.json --jsonArray
+
+  subraces:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Setup Environments
+          command: |
+            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+            echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+            sudo apt-get update
+            sudo apt-get install -y mongodb-org-shell=4.0.10 mongodb-org-tools=4.0.10
+      - run:
+          name: Build Subraces
+          command: node helper Subraces
+      - run:
+          name: Drop Subraces
+          command: mongo "$MONGODB_URI" --eval "db.subraces.drop()"
+      - run:
+          name: Upload Subraces
+          command: mongoimport --uri "$MONGODB_URI" -c subraces --file upload-5e-SRD-Subraces.json --jsonArray
+
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Setup Environments
+          command: |
+            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+            echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+            sudo apt-get update
+            sudo apt-get install -y mongodb-org-shell=4.0.10 mongodb-org-tools=4.0.10
+      - run:
+          name: Build Test
+          command: node helper Test
+      - run:
+          name: Drop Test
+          command: mongo "$MONGODB_URI" --eval "db.test.drop()"
+      - run:
+          name: Upload Test
+          command: mongoimport --uri "$MONGODB_URI" -c test --file upload-5e-SRD-Test.json --jsonArray
+
+  traits:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Setup Environments
+          command: |
+            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+            echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+            sudo apt-get update
+            sudo apt-get install -y mongodb-org-shell=4.0.10 mongodb-org-tools=4.0.10
+      - run:
+          name: Build Traits
+          command: node helper Traits
+      - run:
+          name: Drop Traits
+          command: mongo "$MONGODB_URI" --eval "db.traits.drop()"
+      - run:
+          name: Upload Traits
+          command: mongoimport --uri "$MONGODB_URI" -c traits --file upload-5e-SRD-Traits.json --jsonArray
+
+  weaponProperties:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Setup Environments
+          command: |
+            sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+            echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+            sudo apt-get update
+            sudo apt-get install -y mongodb-org-shell=4.0.10 mongodb-org-tools=4.0.10
+      - run:
+          name: Build Weapon Properties
+          command: node helper Weapon-Properties
+      - run:
+          name: Drop Weapon Properties
+          command: mongo "$MONGODB_URI" --eval "db.weaponProperties.drop()"
+      - run:
+          name: Upload Weapon Properties
+          command: mongoimport --uri "$MONGODB_URI" -c weaponProperties --file upload-5e-SRD-Weapon-Properties.json --jsonArray
+
+workflows:
+  version: 2
+  update:
+    jobs:
+      - abilityScores:
+          <<: *filtersDefaults
+      - classes:
+          <<: *filtersDefaults
+      - conditions:
+          <<: *filtersDefaults
+      - damageTypes:
+          <<: *filtersDefaults
+      - equipmentCategories:
+          <<: *filtersDefaults
+      - equipment:
+          <<: *filtersDefaults
+      - features:
+          <<: *filtersDefaults
+      - languages:
+          <<: *filtersDefaults
+      - levels:
+          <<: *filtersDefaults
+      - magicSchools:
+          <<: *filtersDefaults
+      - monsters:
+          <<: *filtersDefaults
+      - proficiencies:
+          <<: *filtersDefaults
+      - races:
+          <<: *filtersDefaults
+      - skills:
+          <<: *filtersDefaults
+      - spellcasting:
+          <<: *filtersDefaults
+      - spells:
+          <<: *filtersDefaults
+      - startingEquipment:
+          <<: *filtersDefaults
+      - subclasses:
+          <<: *filtersDefaults
+      - subraces:
+          <<: *filtersDefaults
+      - test:
+          <<: *filtersDefaults
+      - traits:
+          <<: *filtersDefaults
+      - weaponProperties:
+          <<: *filtersDefaults
